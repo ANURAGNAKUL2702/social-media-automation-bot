@@ -13,15 +13,24 @@ logger = logging.getLogger(__name__)
 
 def hash_password(password):
     """
-    Hash a password using SHA256.
+    Hash a password using SHA256 with salt.
+    
+    Note: In production, use bcrypt, scrypt, or argon2 for better security.
+    This is a simplified implementation for demonstration.
     
     Args:
         password: Plain text password
         
     Returns:
-        str: Hashed password
+        str: Hashed password with salt
     """
-    return hashlib.sha256(password.encode()).hexdigest()
+    import os
+    # Generate salt
+    salt = os.urandom(32).hex()
+    # Hash password with salt
+    hashed = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000)
+    # Return salt and hash combined
+    return f"{salt}${hashed.hex()}"
 
 
 def verify_password(password, hashed_password):
@@ -30,12 +39,19 @@ def verify_password(password, hashed_password):
     
     Args:
         password: Plain text password
-        hashed_password: Hashed password
+        hashed_password: Hashed password with salt
         
     Returns:
         bool: True if password matches
     """
-    return hash_password(password) == hashed_password
+    try:
+        salt, hash_hex = hashed_password.split('$')
+        # Hash the input password with the stored salt
+        hashed = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000)
+        return hashed.hex() == hash_hex
+    except Exception as e:
+        logger.error(f"Password verification error: {str(e)}")
+        return False
 
 
 def generate_token(user_id, secret_key, expiration_hours=24):
@@ -163,3 +179,61 @@ def format_success_response(data, message=None):
     if message:
         response['message'] = message
     return jsonify(response)
+
+
+def encrypt_credentials(credentials, secret_key):
+    """
+    Encrypt credentials using Fernet symmetric encryption.
+    
+    Note: In production, use a proper key management system.
+    
+    Args:
+        credentials: Credentials string to encrypt
+        secret_key: Encryption key
+        
+    Returns:
+        str: Encrypted credentials
+    """
+    try:
+        from cryptography.fernet import Fernet
+        import base64
+        import hashlib
+        
+        # Create a Fernet key from the secret key
+        key = base64.urlsafe_b64encode(hashlib.sha256(secret_key.encode()).digest())
+        f = Fernet(key)
+        
+        # Encrypt the credentials
+        encrypted = f.encrypt(credentials.encode())
+        return encrypted.decode()
+    except Exception as e:
+        logger.error(f"Encryption error: {str(e)}")
+        return credentials  # Fallback to unencrypted in case of error
+
+
+def decrypt_credentials(encrypted_credentials, secret_key):
+    """
+    Decrypt credentials using Fernet symmetric encryption.
+    
+    Args:
+        encrypted_credentials: Encrypted credentials string
+        secret_key: Encryption key
+        
+    Returns:
+        str: Decrypted credentials
+    """
+    try:
+        from cryptography.fernet import Fernet
+        import base64
+        import hashlib
+        
+        # Create a Fernet key from the secret key
+        key = base64.urlsafe_b64encode(hashlib.sha256(secret_key.encode()).digest())
+        f = Fernet(key)
+        
+        # Decrypt the credentials
+        decrypted = f.decrypt(encrypted_credentials.encode())
+        return decrypted.decode()
+    except Exception as e:
+        logger.error(f"Decryption error: {str(e)}")
+        return encrypted_credentials  # Fallback to returning as-is

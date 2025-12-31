@@ -14,7 +14,7 @@ from backend.core.analytics import AnalyticsTracker
 from backend.utils.helpers import (
     hash_password, verify_password, generate_token, 
     require_auth, format_error_response, format_success_response,
-    validate_subscription
+    validate_subscription, encrypt_credentials, decrypt_credentials
 )
 
 # Configure logging
@@ -235,11 +235,14 @@ def register_routes(app):
         if not all(k in data for k in ['platform', 'account_name', 'credentials']):
             return format_error_response("Missing required fields")
         
+        # Encrypt credentials before storing
+        encrypted_creds = encrypt_credentials(data['credentials'], app.config['SECRET_KEY'])
+        
         account = SocialAccount(
             user_id=request.user_id,
             platform=data['platform'],
             account_name=data['account_name'],
-            credentials=data['credentials']  # Should be encrypted in production
+            credentials=encrypted_creds  # Store encrypted credentials
         )
         
         db.session.add(account)

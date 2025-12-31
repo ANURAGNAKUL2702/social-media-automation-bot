@@ -1,5 +1,9 @@
 """
 Instagram integration for posting to Instagram.
+
+SECURITY NOTE: This implementation uses direct login which is not recommended 
+for production. For production use, please use Instagram's official Business API 
+with access tokens instead. See: https://developers.facebook.com/docs/instagram-api/
 """
 import logging
 
@@ -51,6 +55,9 @@ class InstagramIntegration:
         """
         Post to Instagram.
         
+        SECURITY NOTE: This method uses direct login which may trigger security alerts.
+        For production, use Instagram Business API with access tokens.
+        
         Args:
             content: Post caption
             media_url: Media URL (required for Instagram)
@@ -69,7 +76,8 @@ class InstagramIntegration:
             return False
         
         try:
-            # Login to Instagram
+            # WARNING: Direct login approach - use Business API in production
+            logger.warning("Using direct login for Instagram - consider switching to Business API for production")
             self.client.login(
                 self.config.INSTAGRAM_USERNAME,
                 self.config.INSTAGRAM_PASSWORD

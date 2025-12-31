@@ -288,11 +288,31 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Security 🔒
 
+### Important Security Considerations
+
+**Password Storage**
+- Passwords are hashed using PBKDF2-HMAC-SHA256 with salt
+- For production, consider upgrading to bcrypt, scrypt, or argon2
+
+**Credential Encryption**
+- Social media credentials are encrypted using Fernet symmetric encryption
+- Use a strong SECRET_KEY in production
+- Consider using a dedicated key management system (AWS KMS, Azure Key Vault, etc.)
+
+**Instagram API**
+- Current implementation uses direct login (for demonstration)
+- **For production**: Use Instagram Business API with access tokens
+- See: https://developers.facebook.com/docs/instagram-api/
+
+**Best Practices**
 - Never commit your `.env` file or sensitive credentials
 - Use strong passwords and API keys
 - Enable 2FA on your social media accounts
-- Regularly update dependencies
+- Regularly update dependencies for security patches
 - Review security advisories
+- Use HTTPS in production
+- Implement rate limiting for API endpoints
+- Regular security audits recommended
 
 ## License 📄
 
