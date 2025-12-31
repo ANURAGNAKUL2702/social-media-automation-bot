@@ -27,9 +27,12 @@ logger = logging.getLogger(__name__)
 
 def create_app(config_name='default'):
     """Create and configure the Flask application."""
+    # Get the base directory
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    
     app = Flask(__name__, 
-                static_folder='../frontend/static',
-                template_folder='../frontend/templates')
+                static_folder=os.path.join(basedir, 'frontend/static'),
+                template_folder=os.path.join(basedir, 'frontend/templates'))
     
     # Load configuration
     app.config.from_object(config[config_name])
