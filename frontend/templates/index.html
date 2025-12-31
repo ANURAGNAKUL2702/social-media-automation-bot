@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Automation Bot - Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>📱 Social Media Automation Bot</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#" onclick="showSection('schedule')">Schedule Post</a>
+                <a href="#" onclick="showSection('analytics')">Analytics</a>
+                <a href="#" onclick="showSection('accounts')">Accounts</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </nav>
+
+        <!-- Login Section -->
+        <div id="login-section" class="section active">
+            <div class="login-card">
+                <h2>Welcome Back</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="text-center">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+            </div>
+        </div>
+
+        <!-- Register Section -->
+        <div id="register-section" class="section">
+            <div class="login-card">
+                <h2>Create Account</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="reg-username">Username</label>
+                        <input type="text" id="reg-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email</label>
+                        <input type="email" id="reg-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subscription_plan">Subscription Plan</label>
+                        <select id="subscription_plan" name="subscription_plan">
+                            <option value="basic">Basic - $9.99/month</option>
+                            <option value="premium">Premium - $29.99/month</option>
+                            <option value="enterprise">Enterprise - $99.99/month</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <p class="text-center">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="section">
+            <h2>Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Posts</h3>
+                    <p class="stat-value" id="total-posts">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Posts</h3>
+                    <p class="stat-value" id="pending-posts">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Reach</h3>
+                    <p class="stat-value" id="total-reach">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Engagement Rate</h3>
+                    <p class="stat-value" id="engagement-rate">0%</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Upcoming Posts</h3>
+                <div id="upcoming-posts">
+                    <p class="text-muted">No upcoming posts scheduled</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Post Section -->
+        <div id="schedule-section" class="section">
+            <div class="card">
+                <h2>Schedule New Post</h2>
+                <form id="post-form">
+                    <div class="form-group">
+                        <label for="post-content">Post Content</label>
+                        <textarea id="post-content" name="content" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select Platforms</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="platforms" value="twitter"> Twitter
+                            </label>
+                            <label>
+                                <input type="checkbox" name="platforms" value="facebook"> Facebook
+                            </label>
+                            <label>
+                                <input type="checkbox" name="platforms" value="instagram"> Instagram
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduled-time">Schedule Time</label>
+                        <input type="datetime-local" id="scheduled-time" name="scheduled_time" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="media-url">Media URL (optional)</label>
+                        <input type="url" id="media-url" name="media_url">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Schedule Post</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics-section" class="section">
+            <h2>Analytics Dashboard</h2>
+            
+            <div class="card">
+                <h3>Performance Overview</h3>
+                <div class="analytics-grid">
+                    <div class="analytics-item">
+                        <span class="label">Total Likes:</span>
+                        <span class="value" id="analytics-likes">0</span>
+                    </div>
+                    <div class="analytics-item">
+                        <span class="label">Total Shares:</span>
+                        <span class="value" id="analytics-shares">0</span>
+                    </div>
+                    <div class="analytics-item">
+                        <span class="label">Total Comments:</span>
+                        <span class="value" id="analytics-comments">0</span>
+                    </div>
+                    <div class="analytics-item">
+                        <span class="label">Avg Engagement:</span>
+                        <span class="value" id="analytics-engagement">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Best Posting Times</h3>
+                <div id="best-times">
+                    <p class="text-muted">Loading recommendations...</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Platform Breakdown</h3>
+                <div id="platform-breakdown">
+                    <p class="text-muted">No data available</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accounts Section -->
+        <div id="accounts-section" class="section">
+            <h2>Connected Accounts</h2>
+            
+            <div class="card">
+                <h3>Your Social Media Accounts</h3>
+                <div id="connected-accounts">
+                    <p class="text-muted">No accounts connected</p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="showAddAccount()">+ Connect New Account</button>
+            </div>
+
+            <div id="add-account-form" class="card" style="display: none;">
+                <h3>Connect Account</h3>
+                <form id="account-form">
+                    <div class="form-group">
+                        <label for="account-platform">Platform</label>
+                        <select id="account-platform" name="platform" required>
+                            <option value="twitter">Twitter</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="instagram">Instagram</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="account-name">Account Name</label>
+                        <input type="text" id="account-name" name="account_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="account-credentials">API Credentials (JSON)</label>
+                        <textarea id="account-credentials" name="credentials" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Connect</button>
+                    <button type="button" class="btn" onclick="hideAddAccount()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
